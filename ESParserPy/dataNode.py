@@ -39,15 +39,31 @@ class DataNode:
 		
 		
 	def Value(self, index):
-		if not IsNumber(index):
+		if not self.IsNumber(index):
 			message = "Cannot convert " + self.tokens[index] + " to a number."
+			return 0.
+		
+		token = self.tokens[index]
+		
+		hasDecimalPoint = False
+		hasExponent = False
+		for it in token:
+			if it == ".":
+				hasDecimalPoint = True
+			elif it == "e" or it == "E":
+				hasExponent = True
+		
+		if hasDecimalPoint or hasExponent:
+			value = float(token)
+		else:
+			value = int(token)
 			
-		value = float(token)
 		invalid = ("nan", "inf", "+inf", "-inf")
 		if value not in invalid:
 			return value
 		else:
 			message = "Cannot convert " + str(value) + " to a number."
+			return 0.
 			
 			
 	def IsNumber(self, index):
