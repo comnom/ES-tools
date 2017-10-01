@@ -128,11 +128,9 @@ class DataFile:
 					
 					
 	def Append(self, node):
-		node.parent = self.root
 		self.root.Append(node)
 		
 		
 	def Remove(self, node):
-		node.parent = None
 		self.root.Remove(node)
 
