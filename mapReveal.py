@@ -15,44 +15,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+
 # Overwrite a save to reveal the entire map. Optionally includes plugins.
 #
 # Usage: >>mapReveal.py "games data path" "save file path" "optional: plugin path"
 #
 # This naturally overwrites your save, so if it breaks, you get to keep it.
 
+
+
 if __name__ == "__main__":
 	from ESParserPy.dataFile import DataFile
 	from ESParserPy.dataNode import DataNode
 	from ESParserPy.dataWriter import DataWriter
+	from ESParserPy.getSources import GetSources
 	
-	import os
 	import sys
 	
 	args = sys.argv
 	
-	dataPath = os.path.normpath(args[1])
+	dataPath = args[1]
 	
 	if len(args) > 3:
-		pluginPath = os.path.normpath(args[3])
+		pluginPath = args[3]
 	else:
 		pluginPath = ""
 	
-	files = []
-	
-	for file in os.listdir(dataPath):
-		fullPath = os.path.normpath(dataPath + "/" + file)
-		files.append(DataFile(fullPath))
-	
-	if pluginPath:
-		for dir in os.listdir(pluginPath):
-			pluginDataPath = os.path.normpath(pluginPath + "/" + dir + "/data")
-			if not os.path.isdir(pluginDataPath):
-				continue
-				
-			for file in os.listdir(pluginDataPath):
-				fullPath = os.path.normpath(pluginDataPath + "/" + file)
-				files.append(DataFile(fullPath))
+	files = GetSources(dataPath, pluginPath)
 	
 	systems = []
 	planets = []
@@ -63,29 +52,23 @@ if __name__ == "__main__":
 			elif node.Token(0) == "planet":
 				planets.append(node.Token(1))
 	
-	newRoot = DataNode()
-	
-	for token in systems:
-		child = DataNode(parent=newRoot, children=None, tokens=["visited", token])
-		newRoot.children.append(child)
-	
-	for token in planets:
-		child = DataNode(parent=newRoot, children=None, tokens=["visited planet", token])
-		newRoot.children.append(child)
-	
-	outPath = os.path.normpath(args[2])
+	outPath = args[2]
 	save = DataFile(outPath)
 	
-	for child in save.Begin():
-		if child.Token(0) == "visited" or child.Token(0) == "visited planet":
-			save.root.children.remove(child)
+	for node in save.Begin():
+		if node.Token(0) == "visited" or node.Token(0) == "visited planet":
+			save.Remove(node)
 	
-	for child in newRoot.Begin():
-		save.root.children.append(child)
+	for token in systems:
+		save.Append(DataNode(tokens=["visited", token]))
+	
+	for token in planets:
+		save.Append(DataNode(tokens=["visited planet", token]))
 	
 	newSave = DataWriter(outPath)
 	
-	for child in save.Begin():
-		newSave.Write(child)
+	for node in save.Begin():
+		newSave.Write(node)
 	
 	newSave.Save()
+

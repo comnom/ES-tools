@@ -26,12 +26,11 @@ if __name__ == "__main__":
 	from ESParserPy.dataFile import DataFile
 	from ESParserPy.dataWriter import DataWriter
 	
-	import os
 	import sys
 	
 	args = sys.argv
 	
-	outPath = os.path.normpath(args[1])
+	outPath = args[1]
 	saveFile = DataFile(outPath)
 	
 	system = args[2]
@@ -58,4 +57,4 @@ if __name__ == "__main__":
 		newSave.Write(child)
 		
 	newSave.Save()
-	
+

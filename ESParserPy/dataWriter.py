@@ -26,6 +26,8 @@
 import io
 import os
 
+
+
 class DataWriter:
 	def __init__(self, path):
 		self.indent = ""
@@ -95,3 +97,4 @@ class DataWriter:
 			self.out.write(string)
 		
 		self.before = self.space
+

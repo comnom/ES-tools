@@ -115,3 +115,14 @@ class DataNode:
 	def End(self):
 		for it in reversed(self.children)[:]:
 			yield it
+			
+			
+	def Append(self, node):
+		node.parent = self
+		self.children.append(node)
+		
+		
+	def Remove(self, node):
+		node.parent = None
+		self.children.remove(node)
+

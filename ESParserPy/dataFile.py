@@ -91,8 +91,8 @@ class DataFile:
 				whiteStack.pop()
 				stack.pop()
 			
-			node = DataNode(parent=Back(stack))
-			Back(stack).children.append(node)
+			node = DataNode()
+			Back(stack).Append(node)
 			
 			stack.append(node)
 			whiteStack.append(white)
@@ -125,3 +125,14 @@ class DataFile:
 					
 				if line[it] == "#":
 					break
+					
+					
+	def Append(self, node):
+		node.parent = self.root
+		self.root.Append(node)
+		
+		
+	def Remove(self, node):
+		node.parent = None
+		self.root.Remove(node)
+

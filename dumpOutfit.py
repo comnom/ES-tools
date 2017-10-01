@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+
 # Create a space separated table of outfits matching attributes.
 #
 # Usage: >>dumpOutfit.py "games data path" "plugin path or none" "output file" "attr"
@@ -26,6 +27,7 @@
 # explicitly request them.
 #
 # Does not work with weapons. Use >>EndlessSky.exe -w for that.
+
 
 
 def DumpOutfits(dataFiles, keys):
@@ -52,32 +54,23 @@ def DumpOutfits(dataFiles, keys):
 	return outfits
 
 
+
 if __name__ == "__main__":
-	from ESParserPy.dataFile import DataFile
 	from ESParserPy.dataNode import DataNode
 	from ESParserPy.dataWriter import DataWriter
+	from ESParserPy.getSources import GetSources
 	
-	import os
 	import sys
 	
 	args = sys.argv
 	
-	dataPath = os.path.normpath(args[1])
-	files = []
-	for file in os.listdir(dataPath):
-		fullPath = os.path.normpath(dataPath + "/" + file)
-		files.append(DataFile(fullPath))
+	dataPath = args[1]
+	
+	pluginPath = args[2]
+	if pluginPath == "none":
+		pluginPath = ""
 		
-	pluginPath = os.path.normpath(args[2])
-	if pluginPath != "none":
-		for dir in os.listdir(pluginPath):
-			pluginDataPath = os.path.normpath(pluginPath + "/" + dir + "/data")
-			if not os.path.isdir(pluginDataPath):
-				continue
-				
-			for file in os.listdir(pluginDataPath):
-				fullPath = os.path.normpath(pluginDataPath + "/" + file)
-				files.append(DataFile(fullPath))
+	files = GetSources(dataPath, pluginPath)
 	
 	attributes = args[4:]
 	outfits = DumpOutfits(files, attributes)
@@ -85,8 +78,7 @@ if __name__ == "__main__":
 	newRoot = DataNode()
 	header = ["name", "cost", "space"]
 	header += attributes
-	headerNode = DataNode(parent=newRoot, children=None, tokens=header)
-	newRoot.children.append(headerNode)
+	newRoot.Append(DataNode(tokens=header))
 	
 	for outfit in outfits:
 		tokenList = []
@@ -96,8 +88,7 @@ if __name__ == "__main__":
 			else:
 				tokenList.append("0")
 		
-		newNode = DataNode(parent=newRoot, children=None, tokens=tokenList)
-		newRoot.children.append(newNode)
+		newRoot.Append(DataNode(tokens=tokenList))
 	
 	outPath = args[3]
 	outFile = DataWriter(outPath)
