@@ -69,7 +69,11 @@ class DataFile:
 				return result
 				
 			if Back(result) != "\n":
-				result[len(result) - 1] += "\n"
+				if Back(Back(result)) != "\n":
+					result[len(result) - 1] += "\n"
+					result.append("\n")
+				else:
+					result.append("\n")
 			
 			self.Parse(result)
 			
