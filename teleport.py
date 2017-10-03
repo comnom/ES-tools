@@ -53,8 +53,8 @@ if __name__ == "__main__":
 					
 	newSave = DataWriter(outPath)
 	
-	for child in saveFile.Begin():
-		newSave.Write(child)
+	for node in saveFile.Begin():
+		newSave.Write(node)
 		
 	newSave.Save()
 
