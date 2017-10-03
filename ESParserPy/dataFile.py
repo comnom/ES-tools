@@ -55,8 +55,6 @@ class DataFile:
 		else:
 			try:
 				path = os.path.normpath(path)
-				if not os.path.isfile(path):
-					raise IOError(ENOENT, "File not found: ", path)
 				
 				with open(path, "rbU") as newFile:
 					for line in newFile:
@@ -64,6 +62,7 @@ class DataFile:
 			
 			except (IOError, OSError) as error:
 				message = error.strerror + " " + error.filename
+				print message
 			
 			if not result:
 				return result

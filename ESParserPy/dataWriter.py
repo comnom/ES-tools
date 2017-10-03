@@ -44,6 +44,7 @@ class DataWriter:
 			
 		except (IOError, OSError) as error:
 			message = error.strerror + " " + error.filename
+			print message
 			
 			
 	def Write(self, node):
