@@ -54,16 +54,9 @@ class DataNode:
 				hasExponent = True
 		
 		if hasDecimalPoint or hasExponent:
-			value = float(token)
+			return float(token)
 		else:
-			value = int(token)
-			
-		invalid = ("nan", "inf", "+inf", "-inf")
-		if value not in invalid:
-			return value
-		else:
-			message = "Cannot convert " + str(value) + " to a number."
-			return 0.
+			return int(token)
 			
 			
 	def IsNumber(self, index):
