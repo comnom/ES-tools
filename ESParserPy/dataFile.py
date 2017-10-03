@@ -65,8 +65,11 @@ class DataFile:
 			except (IOError, OSError) as error:
 				message = error.strerror + " " + error.filename
 			
-			if not result or Back(result) != "\n":
-				result.append("\n")
+			if not result:
+				return result
+				
+			if Back(result) != "\n":
+				result[len(result) - 1] += "\n"
 			
 			self.Parse(result)
 			
