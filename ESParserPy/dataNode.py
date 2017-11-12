@@ -40,7 +40,7 @@ class DataNode:
 		
 	def Value(self, index):
 		if not self.IsNumber(index):
-			message = "Cannot convert token at " + index + " to a number."
+			message = "Cannot convert token at " + str(index) + " to a number."
 			print message
 			return 0.
 		
