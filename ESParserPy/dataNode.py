@@ -40,7 +40,7 @@ class DataNode:
 		
 	def Value(self, index):
 		if not self.IsNumber(index):
-			message = "Cannot convert " + self.tokens[index] + " to a number."
+			message = "Cannot convert token at " + index + " to a number."
 			print message
 			return 0.
 		
@@ -106,6 +106,14 @@ class DataNode:
 			yield it
 			
 			
+	def BeginFlat(self):
+		for it in self.Begin():
+			yield it
+			
+			for itb in it.BeginFlat():
+				yield itb
+				
+				
 	def End(self):
 		for it in reversed(self.children)[:]:
 			yield it
@@ -119,4 +127,31 @@ class DataNode:
 	def Remove(self, node):
 		node.parent = None
 		self.children.remove(node)
-
+		
+		
+	def Copy(self):
+		newTokens = []
+		for token in self.tokens:
+			newTokens.append(token)
+			
+		newNode = DataNode(tokens=newTokens)
+		if self.HasChildren():
+			for node in self.Begin():
+				newNode.Append(node.Copy())
+				
+		return newNode
+		
+		
+	def Delete(self):
+		if self.parent:
+			self.parent.Remove(self)
+		else:
+			self.parent = None
+			
+		self.tokens = None
+		
+		for node in self.Begin():
+			node.Delete()
+			
+		self.children = None
+			

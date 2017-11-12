@@ -37,7 +37,7 @@ def DumpOutfits(dataFiles, keys):
 			if node.Token(0) == "outfit":
 				isMatch = False
 				mapping = {"name": node.Token(1), "cost": "", "space": ""}
-				for child in node.Begin():
+				for child in node.BeginFlat():
 					if child.Token(0) == "cost":
 						mapping["cost"] = child.Token(1)
 					elif child.Token(0) == "outfit space":
