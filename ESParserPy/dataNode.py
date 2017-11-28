@@ -23,7 +23,7 @@
 
 
 
-class DataNode:
+class DataNode(object):
 	def __init__(self, parent=None, children=None, tokens=None):
 		self.parent = parent
 		self.children = children or []
@@ -41,7 +41,7 @@ class DataNode:
 	def Value(self, index):
 		if not self.IsNumber(index):
 			message = "Cannot convert token at " + str(index) + " to a number."
-			print message
+			print(message)
 			return 0.
 		
 		token = self.tokens[index]
@@ -99,8 +99,8 @@ class DataNode:
 			return True
 			
 		return False
-			
-			
+		
+	
 	def Begin(self):
 		for it in self.children[:]:
 			yield it

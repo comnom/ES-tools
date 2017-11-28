@@ -26,6 +26,7 @@
 from dataNode import DataNode
 
 import os
+import io
 
 
 
@@ -34,8 +35,11 @@ def Back(sequence):
 	
 	
 	
-class DataFile:
+class DataFile(object):
 	def __init__(self, path=""):
+		if not path or not path.endswith(".txt"):
+			return []
+			
 		self.root = DataNode()
 		self.Load(path)
 		
@@ -50,34 +54,31 @@ class DataFile:
 		
 	def Load(self, path):
 		result = []
-		if not path:
+		try:
+			path = os.path.normpath(path)
+			
+			with io.open(path, "rb") as newFile:
+				for line in newFile:
+					result.append(line)
+		
+		except (IOError, OSError) as error:
+			message = error.strerror + " " + error.filename
+			print(message)
+		
+		if not result:
 			return result
-		else:
-			try:
-				path = os.path.normpath(path)
-				
-				with open(path, "rbU") as newFile:
-					for line in newFile:
-						result.append(line)
 			
-			except (IOError, OSError) as error:
-				message = error.strerror + " " + error.filename
-				print message
-			
-			if not result:
-				return result
-				
-			if Back(result) != "\n":
-				if Back(Back(result)) != "\n":
-					result[len(result) - 1] += "\n"
-					result.append("\n")
-				else:
-					result.append("\n")
-			
-			self.Parse(result)
-			
-			self.root.tokens.append("file")
-			self.root.tokens.append(path)
+		if Back(result) != "\n":
+			if Back(Back(result)) != "\n":
+				result[len(result) - 1] += "\n"
+				result.append("\n")
+			else:
+				result.append("\n")
+		
+		self.Parse(result)
+		
+		self.root.tokens.append("file")
+		self.root.tokens.append(path)
 			
 			
 	def Parse(self, data):

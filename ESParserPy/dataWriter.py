@@ -28,7 +28,7 @@ import os
 
 
 
-class DataWriter:
+class DataWriter(object):
 	def __init__(self, path):
 		self.indent = ""
 		self.space = " "
@@ -39,12 +39,12 @@ class DataWriter:
 		
 	def Save(self):
 		try:
-			with open(self.path, "wb") as saveFile:
+			with io.open(self.path, "wb") as saveFile:
 				saveFile.write(self.out.getvalue())
 			
 		except (IOError, OSError) as error:
 			message = error.strerror + " " + error.filename
-			print message
+			print(message)
 			
 			
 	def Write(self, node):
