@@ -38,7 +38,7 @@ def Back(sequence):
 class DataFile(object):
 	def __init__(self, path=""):
 		if not path or not path.endswith(".txt"):
-			return []
+			return None
 			
 		self.root = DataNode()
 		self.Load(path)
