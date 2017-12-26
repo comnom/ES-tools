@@ -24,6 +24,8 @@
 
 
 class DataNode(object):
+	__slots__ = ('parent', 'children', 'tokens')
+	
 	def __init__(self, parent=None, children=None, tokens=None):
 		self.parent = parent
 		self.children = children or []
@@ -40,8 +42,8 @@ class DataNode(object):
 		
 	def Value(self, index):
 		if not self.IsNumber(index):
-			message = "Cannot convert token at " + str(index) + " to a number."
-			print(message)
+			message = "Cannot convert token at index " + str(index) + " to a number."
+			self.PrintTrace(message)
 			return 0.
 		
 		token = self.tokens[index]
@@ -154,4 +156,45 @@ class DataNode(object):
 			node.Delete()
 			
 		self.children = None
+		
+		
+	def PrintTrace(self, message):
+		if message:
+			print("\n")
+			print(message)
 			
+		indent = 0
+		if self.parent:
+			indent = self.parent.PrintTrace("") + 2
+		if not self.tokens:
+			return indent
+			
+		line = ""
+		for it in range(0, indent):
+			line += " "
+			
+		start = True
+		for token in self.tokens:
+			if not start:
+				line += " "
+				
+			hasSpace = False
+			hasQuote = False
+			
+			for it in token:
+				if it.isspace():
+					hasSpace = True
+				
+				if it == '"':
+					hasQuote = True
+					
+			if hasSpace:
+				line += ('`' if hasQuote else '"')
+			line += token
+			if hasSpace:
+				line += ('`' if hasQuote else '"')
+				
+			start = False
+			
+		print(line)
+		return indent

@@ -29,6 +29,8 @@ import os
 
 
 class DataWriter(object):
+	__slots__ = ('indent', 'space', 'before', 'path', 'out')
+	
 	def __init__(self, path):
 		self.indent = ""
 		self.space = " "
@@ -83,14 +85,18 @@ class DataWriter(object):
 		hasQuote = False
 		
 		for it in string:
-			if it == " " or it == "\t":
+			if it.isspace():
 				hasSpace = True
 			
 			if it == '"':
 				hasQuote = True
 		
 		self.out.write(self.before)
-		if hasSpace and hasQuote:
+		if not string:
+			self.out.write('""')
+		elif hasSpace and hasQuote:
+			self.out.write("`" + string + "`")
+		elif hasQuote:
 			self.out.write("`" + string + "`")
 		elif hasSpace:
 			self.out.write('"' + string + '"')

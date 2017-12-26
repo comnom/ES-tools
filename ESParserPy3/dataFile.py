@@ -36,6 +36,8 @@ def Back(sequence):
 	
 	
 class DataFile(object):
+	__slots__ = 'root'
+	
 	def __init__(self, path=""):
 		if not path or not path.endswith(".txt"):
 			return None
@@ -59,7 +61,7 @@ class DataFile(object):
 			
 			with io.open(path, "rb") as newFile:
 				for line in newFile:
-					result.append(line.decode("utf-8"))
+					result.append(line.decode("utf-8") + "\n")
 		
 		except (IOError, OSError) as error:
 			message = error.strerror + " " + error.filename
@@ -69,18 +71,14 @@ class DataFile(object):
 			return result
 			
 		if Back(result) != "\n":
-			if Back(Back(result)) != "\n":
-				result[len(result) - 1] += "\n"
-				result.append("\n")
-			else:
-				result.append("\n")
+			result.append("\n")
+				
+		self.root.tokens.append("file")
+		self.root.tokens.append(path)
 		
 		self.Parse(result)
 		
-		self.root.tokens.append("file")
-		self.root.tokens.append(path)
-			
-			
+		
 	def Parse(self, data):
 		stack = [self.root]
 		whiteStack = [-1]
@@ -116,6 +114,8 @@ class DataFile(object):
 					while line[it] != "\n" and line[it] != endQuote:
 						token += line[it]
 						it += 1
+					if line[it] != endQuote:
+						node.PrintTrace("Closing quote is missing.")
 					it += 1
 				
 				else:
@@ -123,8 +123,7 @@ class DataFile(object):
 						token += line[it]
 						it += 1
 				
-				if token:
-					node.tokens.append(token)
+				node.tokens.append(token)
 				
 				if line[it] != "\n":
 					while line[it].isspace() and line[it] != "\n":
