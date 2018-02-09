@@ -97,10 +97,7 @@ class DataNode(object):
 		
 		
 	def HasChildren(self):
-		if self.children:
-			return True
-			
-		return False
+		return bool(self.children)
 		
 	
 	def Begin(self):

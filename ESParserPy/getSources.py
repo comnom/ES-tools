@@ -26,20 +26,48 @@ def GetSources(dataPath, pluginPath=""):
 	dataPath = os.path.normpath(dataPath)
 	files = []
 	
-	for file in os.listdir(dataPath):
-		fullPath = os.path.normpath(dataPath + "/" + file)
-		files.append(DataFile(fullPath))
-	
+	for tup in os.walk(dataPath):
+		for file in tup[2]:
+			files.append(DataFile(os.path.join(tup[0], file)))
+			
 	if pluginPath:
 		pluginPath = os.path.normpath(pluginPath)
 		for dir in os.listdir(pluginPath):
-			pluginDataPath = os.path.normpath(pluginPath + "/" + dir + "/data")
-			if not os.path.isdir(pluginDataPath):
-				continue
-				
-			for file in os.listdir(pluginDataPath):
-				fullPath = os.path.normpath(pluginDataPath + "/" + file)
-				files.append(DataFile(fullPath))
-				
+			subPath = os.path.join(pluginPath, dir)
+			for subdir in os.listdir(subPath):
+				if subdir == "data":
+					for tup in os.walk(os.path.join(subPath, subdir)):
+						for file in tup[2]:
+							files.append(DataFile(os.path.join(tup[0], file)))
+					
 	return files
-
+	
+	
+def GetImages(imagePath, pluginPath=""):
+	imagePath = os.path.normpath(imagePath)
+	files = []
+	
+	for tup in os.walk(imagePath):
+		for file in tup[2]:
+			path = os.path.join(tup[0], file)
+			files.append((GetName(path), path))
+			
+	if pluginPath:
+		pluginPath = os.path.normpath(pluginPath)
+		for dir in os.listdir(pluginPath):
+			subPath = os.path.join(pluginPath, dir)
+			for subdir in os.listdir(subPath):
+				if subdir == "images":
+					for tup in os.walk(os.path.join(subPath, subdir)):
+						for file in tup[2]:
+							path = os.path.join(tup[0], file)
+							files.append((GetName(path), path))
+							
+	return files
+	
+	
+def GetName(path):
+	path = path.replace("\\", "/")
+	return path.rpartition("/images/")[2]
+	
+	
