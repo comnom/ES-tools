@@ -30,11 +30,6 @@ import io
 
 
 
-def Back(sequence):
-	return sequence[(len(sequence) - 1)]
-	
-	
-	
 class DataFile(object):
 	__slots__ = "root"
 	
@@ -43,7 +38,8 @@ class DataFile(object):
 			return None
 			
 		self.root = DataNode()
-		self.Load(path)
+		if not self.Load(path):
+			return None
 		
 		
 	def Begin(self):
@@ -61,22 +57,27 @@ class DataFile(object):
 			
 			with io.open(path, "rb") as newFile:
 				for line in newFile:
-					result.append(line + "\n")
+					if not line[-1] == "\n":
+						result.append(line + "\n")
+					else:
+						result.append(line)
 		
 		except (IOError, OSError) as error:
 			message = error.strerror + " " + error.filename
 			print(message)
 		
 		if not result:
-			return result
+			return False
 			
-		if Back(result) != "\n":
+		if not result[-1] == "\n":
 			result.append("\n")
-		
+			
 		self.root.tokens.append("file")
 		self.root.tokens.append(path)
 		
 		self.Parse(result)
+		
+		return True
 		
 		
 	def Parse(self, data):
@@ -92,12 +93,12 @@ class DataFile(object):
 			if line[it] == "#" or line[it] == "\n":
 				continue
 			
-			while Back(whiteStack) >= white:
+			while whiteStack[-1] >= white:
 				whiteStack.pop()
 				stack.pop()
 			
 			node = DataNode()
-			Back(stack).Append(node)
+			stack[-1].Append(node)
 			
 			stack.append(node)
 			whiteStack.append(white)
