@@ -34,12 +34,16 @@ class DataFile(object):
 	__slots__ = 'root'
 	
 	def __init__(self, path=""):
+		self.root = DataNode()
 		if not path or not path.endswith(".txt"):
 			return None
 			
-		self.root = DataNode()
 		if not self.Load(path):
 			return None
+		
+		
+	def __nonzero__(self):
+		return self.root.HasChildren()
 		
 		
 	def Begin(self):
