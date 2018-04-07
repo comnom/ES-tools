@@ -19,6 +19,7 @@
 from .dataFile import DataFile
 
 import os
+import sys
 
 
 
@@ -50,7 +51,7 @@ def GetImages(imagePath, pluginPath=""):
 	for tup in os.walk(imagePath):
 		for file in tup[2]:
 			path = os.path.join(tup[0], file)
-			files.append((GetName(path), path))
+			files.append((GetImageName(path), path))
 			
 	if pluginPath:
 		pluginPath = os.path.normpath(pluginPath)
@@ -61,13 +62,39 @@ def GetImages(imagePath, pluginPath=""):
 					for tup in os.walk(os.path.join(subPath, subdir)):
 						for file in tup[2]:
 							path = os.path.join(tup[0], file)
-							files.append((GetName(path), path))
+							files.append((GetImageName(path), path))
 							
 	return files
 	
 	
-def GetName(path):
+def GetImageName(path):
 	path = path.replace("\\", "/")
 	return path.rpartition("/images/")[2]
+	
+	
+def GetConfigPath():
+	curPlatform = sys.platform
+	path = ""
+	if curPlatform.startswith("linux"):
+		path = os.path.expanduser("~/.local/share/endless-sky/")
+	elif curPlatform == "darwin":
+		path = os.path.expanduser("~/Library/Application Support/endless-sky/")
+	elif curPlatform == "win32":
+		path = os.path.expandvars("%appdata%\\endless-sky")
+		
+	return path
+	
+	
+def GetGamePath():
+	curPlatform = sys.platform
+	path = ""
+	if curPlatform.startswith("linux"):
+		path = os.path.expanduser("~/.steam/steam/steamapps/common/Endless Sky/data")
+	elif curPlatform == "darwin":
+		path = os.path.expanduser("~/Library/Application Support/Steam/SteamApps/common/Endless Sky/data")
+	elif curPlatform == "win32":
+		path = os.path.expandvars("%programfiles(x86)%\\Steam\\steamapps\\common\\Endless Sky\\data")
+		
+	return path
 	
 	
